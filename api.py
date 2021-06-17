@@ -7,11 +7,16 @@ import datetime
 from functools import wraps
 from marshmallow import Schema, fields
 import os
+import re
 
 app = Flask(__name__)
 
+uri = os.environ['DATABASE_URL']
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY'] #"thisisasecretkey" 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'] #'postgresql://postgres:1212@localhost/testdbapi' 
+app.config['SQLALCHEMY_DATABASE_URI'] = uri #os.environ['DATABASE_URL'] #'postgresql://postgres:1212@localhost/testdbapi' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
