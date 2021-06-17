@@ -10,8 +10,9 @@ import os
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SECRET_KEY'] = "thisisasecretkey" #os.environ['SECRET_KEY']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1212@localhost/testdbapi' #os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
@@ -33,22 +34,6 @@ class User(db.Model):
     modified_at = db.Column(db.DateTime)
     blogposts = db.relationship('BlogpostModel', backref='users', lazy=True)
 
-class UserSchema(Schema):
-
-    id = fields.Int(dump_only=True)
-    public_id = fields.Int(dump_only=True)
-    first_name = fields.Str(required=True)
-    last_name = fields.Str(required=True)
-    username = fields.Str(required=True)
-    email = fields.Email(required=True)
-    email_verified = fields.Bool(required=True)
-    is_staff = fields.Bool(required=True)
-    is_admin = fields.Bool(required =True)
-    password = fields.Str(required=True, load_only=True)
-    created_at = fields.DateTime(dump_only=True)
-    modified_at = fields.DateTime(dump_only=True)
-    blogposts = fields.Nested(many=True)
-
 class BlogpostModel(db.Model):
 
     __tablename__ = 'blogposts'
@@ -59,15 +44,6 @@ class BlogpostModel(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime)
     modified_at = db.Column(db.DateTime)
-
-class BlogpostSchema(Schema):
-
-    id = fields.Int(dump_only=True)
-    title = fields.Str(required=True)
-    contents = fields.Str(required=True)
-    owner_id = fields.Int(required=True)
-    created_at = fields.DateTime(dump_only=True)
-    modified_at = fields.DateTime(dump_only=True)
 
 def token_required(f):
     @wraps(f)
@@ -105,3 +81,8 @@ def create_user():
     db.session.commit()
 
     return jsonify({'message' :'New user created!', 'success' : 'True'})
+
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run()
