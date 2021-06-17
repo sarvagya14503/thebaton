@@ -10,8 +10,8 @@ import os
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "thisisasecretkey" #os.environ['SECRET_KEY']
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1212@localhost/testdbapi' #os.environ['DATABASE_URL']
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY'] #"thisisasecretkey" 
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'] #'postgresql://postgres:1212@localhost/testdbapi' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
